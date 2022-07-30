@@ -23,6 +23,8 @@ async function run() {
         const toolsCollection = client.db("plumbtion-manufacturer").collection("tools");
         const reviewsCollection = client.db("plumbtion-manufacturer").collection("reviews");
         const ordersCollection = client.db("plumbtion-manufacturer").collection("orders");
+        const usersCollection = client.db("plumbtion-manufacturer").collection("users");
+        const paymentsCollection = client.db("plumbtion-manufacturer").collection("payments");
 
         //8 get tool 
         app.get('/tool', async (req, res) => {
@@ -107,6 +109,30 @@ async function run() {
             const allOrder = await ordersCollection.find(query).toArray()
             res.send(allOrder)
         })
+
+             //31 payment 
+             app.patch('/order/:id', verifyJWT, async (req, res) => {
+                const id = req.params.id;
+                const payment = req.body;
+                const filter = { _id: ObjectId(id) };
+                const updatedDoc = {
+                    $set: {
+                        paid: true,
+                        transactionId: payment.transactionId
+                    }
+                }
+                const result = await paymentsCollection.insertOne(payment);
+                const updatedBooking = await ordersCollection.updateOne(filter, updatedDoc);
+                res.send(updatedBooking,result);
+            })
+    
+            //32 delete order
+            app.delete('/all-order/:id', verifyJWT, verifyAdmin, async (req, res) => {
+                const id = req.params.id
+                const filter = { _id : ObjectId(id) }
+                const result = await ordersCollection.deleteOne(filter)
+                res.send(result)
+            })
 
            // ***    Review        **//
 
