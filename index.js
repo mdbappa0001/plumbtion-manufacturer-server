@@ -21,12 +21,37 @@ async function run() {
     try {
         await client.connect();
         const toolsCollection = client.db("plumbtion-manufacturer").collection("tools");
+        const reviewsCollection = client.db("plumbtion-manufacturer").collection("reviews");
 
         //8 get tool 
         app.get('/tool', async (req, res) => {
             const query = {}
             const tools = await toolsCollection.find(query).toArray()
             res.send(tools)
+        })
+
+           // ***    Review        **//
+
+        //21 get reviews 
+        app.get('/review', async (req, res) => {
+            const query = {}
+            const reviews = await reviewsCollection.find(query).toArray()
+            res.send(reviews)
+        })
+
+        //22 post reviews
+        app.post('/review', verifyJWT, async (req, res) => {
+            const review = req.body
+            const result = await reviewsCollection.insertOne(review)
+            res.send(result)
+        })
+
+        //34 delete review
+        app.delete('/review/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id
+            const filter = { _id : ObjectId(id) }
+            const result = await reviewsCollection.deleteOne(filter)
+            res.send(result)
         })
 
 
