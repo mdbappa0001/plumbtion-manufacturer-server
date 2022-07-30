@@ -78,6 +78,36 @@ async function run() {
             res.send(result)
         })
 
+           //12 read my orders (get)
+           app.get('/order', verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const decodedEmail = req.decoded.email
+            if (email === decodedEmail) {
+                const query = { email: email };
+                const orders = await ordersCollection.find(query).toArray();
+                res.send(orders);
+            }
+            else {
+                return res.status(403).send({ message: 'Forbidden Access' });
+            }
+
+        })
+
+        //13 delete my order
+        app.delete('/order/:email', async (req, res) => {
+            const email = req.params.email
+            const filter = { email: email }
+            const result = await ordersCollection.deleteOne(filter)
+            res.send(result)
+        })
+
+        //25 get all orders
+        app.get('/all-order', verifyJWT, verifyAdmin, async (req, res) => {
+            const query = {}
+            const allOrder = await ordersCollection.find(query).toArray()
+            res.send(allOrder)
+        })
+
            // ***    Review        **//
 
         //21 get reviews 
