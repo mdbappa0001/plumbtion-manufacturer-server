@@ -4,7 +4,7 @@ const app = express()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')('sk_test_51L14pjDEsxnXfJbTlrS3grchkKNLNJquxxzz79aQiElQwp6RcnTeEJIRskV7INrmUt7vBTFS2pWMTokjKFP0nbIC00bPMze6Az')
+const stripe = require('stripe')('sk_test_51L1DprCocrPsKOt6XiDjzkhlYf8PCq1EKrpQgFiednA1N2Frlwn7Mno6hwOMMgHFnPDj6cYFgGmsAQ7kBXJvn0Pz00BrKnz2N4')
 
 //3
 const cors = require('cors')
@@ -16,7 +16,7 @@ app.use(express.json())
 
 //5 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.emoo7.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.emoo7.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 // console.log(uri);
