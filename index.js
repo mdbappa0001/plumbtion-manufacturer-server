@@ -145,6 +145,94 @@ async function run() {
             res.send(result)
         })
 
+
+
+           // ***    User        **//
+
+        //15  user create or update 
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const user = req.body;
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: user
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options)
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
+            res.send({ result, token })
+        })
+
+        //16 get users 
+        app.get('/user', verifyJWT, async (req, res) => {
+            const users = await usersCollection.find().toArray()
+            res.send(users)
+        })
+
+        //26 Profile 
+        app.get('/profile/:email', verifyJWT, async (req, res) => {
+            const email = req.params.email
+            const profile = await usersCollection.findOne({ email: email })
+            res.send(profile)
+        })
+
+        //34 get user img 
+        app.get('/profile-img/:email',verifyJWT,  async (req, res) => {
+            const email = req.params.email
+            const profile = await usersCollection.findOne({ email: email })
+            res.send(profile)
+        })
+
+        //27 update profile
+        app.put('/profile/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id
+            const updateInfo = req.body
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: updateInfo
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
+
+        //28 update img
+        app.put('/my-image/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id
+            const updateInfo = req.body
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: updateInfo
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
+
+
+        //17 make admin 
+        app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { role: 'admin' }
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+
+        app.put('/user/user/:email', verifyJWT, verifyAdmin, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { role: 'user' }
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+
+
+
            // ***    Review        **//
 
         //21 get reviews 
