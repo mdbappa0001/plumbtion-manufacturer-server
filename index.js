@@ -22,6 +22,7 @@ async function run() {
         await client.connect();
         const toolsCollection = client.db("plumbtion-manufacturer").collection("tools");
         const reviewsCollection = client.db("plumbtion-manufacturer").collection("reviews");
+        const ordersCollection = client.db("plumbtion-manufacturer").collection("orders");
 
         //8 get tool 
         app.get('/tool', async (req, res) => {
@@ -65,6 +66,15 @@ async function run() {
                 },
             };
             const result = await toolsCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
+
+          // ***    Order        **//
+
+        //10 get orders
+        app.post('/order', async (req, res) => {
+            const order = req.body
+            const result = await ordersCollection.insertOne(order)
             res.send(result)
         })
 
