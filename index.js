@@ -38,6 +38,36 @@ async function run() {
             res.send(tool)
         })
 
+          //23 add tool (pipes)
+          app.post('/tool', verifyJWT, verifyAdmin, async (req, res) => {
+            const pipe = req.body
+            const result = await toolsCollection.insertOne(pipe)
+            res.send(result)
+        })
+
+        //24 delete product (pipe) 
+        app.delete('/tool/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const tools = await toolsCollection.deleteOne(query)
+            res.send(tools)
+        })
+
+        //11 available tool (pipe) update
+        app.put('/tool/:id', async (req, res) => {
+            const id = req.params.id
+            const updateTool = req.body
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    available: updateTool.available,
+                },
+            };
+            const result = await toolsCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
+
            // ***    Review        **//
 
         //21 get reviews 
